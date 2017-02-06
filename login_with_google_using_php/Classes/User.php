@@ -1,67 +1,36 @@
 <?php
 
-class User {
-	// private $dbHost     = "localhost";
-    // private $dbUsername = "root";
-    // private $dbPassword = "";
-    // private $dbName     = "blog";
-    // private $userTbl    = 'users';
+class User
+{
 	
     private $_db = null;
 
 	public function __construct()
     {
         $this->_db = DB::getInstance();
-        // if(!isset($this->db)){
-        //     // Connect to the database
-        //     $conn = new mysqli($this->dbHost, $this->dbUsername, $this->dbPassword, $this->dbName);
-        //     if($conn->connect_error){
-        //         die("Failed to connect with MySQL: " . $conn->connect_error);
-        //     }else{
-        //         $this->db = $conn;
-        //     }
-        // }
     }
 	
 
-    function checkUser($userData = array())
+    public function checkUser($userData = array())
     {
-        $data = $this->_db->get('users', array(
-                'oauth_provider' => $userData['oauth_provider'],
-                'oauth_uid' => $userData['oauth_uid']
-                ));
-        die($data->first());
-
         if(!empty($userData))
         {
-            $data = $this->_db->get('users', array(
-                'oauth_provider' => $userData['oauth_provider'],
-                'oauth_uid' => $userData['oauth_uid']
-                ));
-            var_dump('<br><br>'.$data);
+            $data = $this->_db->get('users', array('oauth_uid', '=', $userData['oauth_uid']));
+            
             if($data->count() > 0)
             {
                 $userId = $data->first()->id;
-                $updateData = $this->_db->update('users', $userId, array('oauth_uid', '=', $userData['']));
+                $updateData = $this->_db->update('users', $userId, array('oauth_uid', '=', $userData['oauth_uid']));
             }
             else
             {
                 $insertData = $this->_db->insert('users', array('oauth_uid', '=', $userData['oauth_uid']));
             }
         }
-        $result = $this->_db->get('users', array(
-            'oauth_provider' => $userData['oauth_provider'],
-            'oauth_uid' => $userData['oauth_uid']
-            ));
-        return $userData->first();
+        $result = $this->_db->get('users', array('oauth_uid', '=', $userData['oauth_uid']));
+
+        return $result->first();
     }
-
-
-
-
-
-
-
 
 	// function checkUser($userData = array()){
  //        if(!empty($userData))
