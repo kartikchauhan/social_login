@@ -5,12 +5,13 @@ include_once 'gpConfig.php';
 
 if(isset($_GET['code'])){
 	$gClient->authenticate($_GET['code']);
-	$_SESSION['token'] = $gClient->getAccessToken();
-	header('Location: ' . filter_var($redirectURL, FILTER_SANITIZE_URL));
+	Session::put('googleToken', $gClient->getAccessToken());
+	// $_SESSION['googleToken'] = ;
+	Redirect::to($redirectURL);
 }
 
-if (isset($_SESSION['token'])) {
-	$gClient->setAccessToken($_SESSION['token']);
+if (Session::exists('googleToken')) {
+	$gClient->setAccessToken(Session::get('googleToken'));
 }
 
 if ($gClient->getAccessToken()) {
@@ -29,7 +30,10 @@ if ($gClient->getAccessToken()) {
     $userData = $user->checkUser($gpUserData);
 	
 	//Storing user data into session
-	$_SESSION['userData'] = $userData;
+	// Session::put('username', $userData->first_name);
+	// echo Session::get('username');
+	echo '<br>';
+	// $_SESSION['userData'] = $userData;
 	
 	//Render facebook profile data
     if(!empty($userData)){
